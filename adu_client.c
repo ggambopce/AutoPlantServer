@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <unistd.h>     // read, write, close
 #include <sys/socket.h> // socket, bind, listen, accept
 #include <arpa/inet.h>  // sockaddr_in, htons, inet_ntoa

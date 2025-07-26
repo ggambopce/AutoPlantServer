@@ -67,7 +67,13 @@ int main(int argc, char *argv[])
 
     // 6. 데이터 통신 서비스 로직
     while ((string_length = read(client_socket, message, BUF_SIZE)) != 0)
+    {
+        message[string_length] = '\0';             // 수신된 문자열에 끝에 널 종료 문자 삽입
+        printf("수신된 센서 데이터: %s", message); // 콘솔에 출력
+
+        // 클라이언트에게 에코 응답보내기
         write(client_socket, message, string_length);
+    }
 
     // 7. 자원 해제
     close(client_socket);

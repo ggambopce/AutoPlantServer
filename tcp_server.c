@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
     // 2. 연결 대기 서버 소캣 초기화 주소체계 설정, POSIX 표준 초기화 방식
     memset(&server_address, 0, sizeof(server_address)); // 메모리 시작위치, 초기화할 값, 초기화할 바이트 수
     server_address.sin_family = AF_INET;                // IPv4 주소체계 설정
-    server_address.sin_addr.s_addr = INADDR_ANY;        // 서버의 모든 IP주소로부터의 요청을 수락 32비트 정수 빅엔디안으로 변경
+    server_address.sin_addr.s_addr = htonl(INADDR_ANY); // 서버의 모든 IP주소로부터의 요청을 수락 32비트 정수 빅엔디안
     server_address.sin_port = htons(atoi(argv[1]));     // 포트 번호를 16비트 정수 빅엔디안으로 변경
 
     // 3. 바인딩: 연결 대기 서버소켓에 IP/PORT 할당
@@ -82,11 +82,3 @@ void error_handling(char *message)
     fputc('\n', stderr);    // 줄바꿈 문자 하나 출력
     exit(1);
 }
-
-/* 서버 흐름 정리
-socket() → bind() → listen() → accept()
-       ↓                         ↑
-   write()/read()            client 소켓 처리
-       ↓
-     close()
- */

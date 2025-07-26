@@ -44,15 +44,19 @@ int main(int argc, char *argv[])
         puts("연결되었습니다........");
 
     // 4. 데이터 통신 서비스 로직
+    // 랜덤 값 생성을 위한 시드 초기화
+    srand((unsigned int)time(NULL)); // 현재 시간을 기반을 으로 난수 시드 설정
+
+    // 데이터 전송 루프
     while (1)
     {
-        // 스트림 방식으로 버퍼를 사용한 입출력
-        fputs("메세지를 작성해주세요(Q to quit)", stdout); // 입력 안내 메세지 출력(개행 없음)
-        fgets(message, BUF_SIZE, stdin);                   // 사용자 입력을 message[]버퍼에 저장 (개행 포함)
+        // 4-1. 랜덤 온도 및 습도 생성
+        float temp = 20.0 + (rand() % 1000) / 100.0f; // TEMP: 20.0 ~ 29.99
+        float hum = 40.0 + (rand() % 3000) / 100.0f;  // HUM: 40.0 ~ 69.99
 
-        // "q" 또는 "Q" 입력 시 루프 종료
-        if (!strcmp(message, "q\n") || !strcmp(message, "Q\n"))
-            break;
+        // 4-2. sprintf를 이용해 문자열로 포맷팅
+        // TEMP=24.52,HUM=61.47\n 형식의 문자열 생성
+        sprintf(message, "TEMP=%.2f,HUM=%.2f\n", temp, hum);
 
         // 5. 입력 메시지를 서버로 전송 (문자열 길이만큼)
         // 함수 원형 ssize_t write(int fd, const void *buf, size_t count);
@@ -65,10 +69,13 @@ int main(int argc, char *argv[])
         // (읽을 대상 디스크립터, 읽어온 데이터 저장할 버퍼(배열포인터), 최대 읽을 수 있는 바이트수)
         // 실제로 읽은 바이트 수 반환
         string_length = read(client_socket, message, BUF_SIZE - 1);
-        message[string_length] = 0; // 문자배열 수동 \0 삽입 널문자 의미
+        message[string_length] = '\0'; // 널 종료문자 의미, 문자배열 수동 \0 삽입
 
         // 7. 서버 응답 출력
         printf("서버 응답: %s", message);
+
+        // 8. 1초 대기 후 다음 전송
+        sleep(1);
     }
 
     // 8. 소켓 종료 (TCP 연결 종료)

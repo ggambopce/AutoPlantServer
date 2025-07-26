@@ -68,8 +68,28 @@ int main(int argc, char *argv[])
     // 6. 데이터 통신 서비스 로직
     while ((string_length = read(client_socket, message, BUF_SIZE)) != 0)
     {
-        message[string_length] = '\0';             // 수신된 문자열에 끝에 널 종료 문자 삽입
-        printf("수신된 센서 데이터: %s", message); // 콘솔에 출력
+        message[string_length] = '\0';                  // 수신된 문자열에 끝에 널 종료 문자 삽입
+        printf("수신된 센서 원본 데이터: %s", message); // 원본메세지 콘솔에 출력
+
+        // JSON 구조화를 위한 변수 선언
+        double temp = 0.0, hum = 0.0;
+        char *temp_ptr = strstr(message, "TEMP="); // TEMP= 키워드 위치 검색
+        char *hum_ptr = strstr(message, "HUM=");   // HUM= 키워드 위치 검색
+
+        // TEMP, HUM 모두 존재할 경우에만 파싱 시도
+        if (temp_ptr && hum_ptr)
+        {
+            sscanf(temp_ptr, "TEMP=%lf", &temp); // TEMP 값 추출
+            sscanf(hum_ptr, "HUM=%lf", &hum);    // HUM 값 추출
+
+            // 추출한 값을 JSON 형식으로 출력
+            printf("파싱된 JSON: { \"temp\": %.2f, \"hum\": %.2f }\n", temp, hum);
+        }
+        else
+        {
+            // TEMP 또는 HUM 키가 누락된 경우 경고 출력
+            printf("TEMP 또는 HUM 포맷 오류\n");
+        }
 
         // 클라이언트에게 에코 응답보내기
         write(client_socket, message, string_length);

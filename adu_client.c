@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
         printf("서버 응답: %s", message);
 
         // 8. 1초 대기 후 다음 전송
-        sleep(1);
+        sleep(3);
     }
 
     // 8. 소켓 종료 (TCP 연결 종료)

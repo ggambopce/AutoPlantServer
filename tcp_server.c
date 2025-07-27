@@ -73,17 +73,19 @@ int main(int argc, char *argv[])
 
         // JSON 구조화를 위한 변수 선언
         double temp = 0.0, hum = 0.0;
-        char *temp_ptr = strstr(message, "TEMP="); // TEMP= 키워드 위치 검색
-        char *hum_ptr = strstr(message, "HUM=");   // HUM= 키워드 위치 검색
+        char *temp_ptr = strstr(message, "TEMP="); // TEMP= 키워드가 처음 등장하는 위치의 포인터
+        char *hum_ptr = strstr(message, "HUM=");   // HUM= 키워드가 처음 등장하는 위치의 포인터
 
         // TEMP, HUM 모두 존재할 경우에만 파싱 시도
         if (temp_ptr && hum_ptr)
         {
+            // 함수원형 int sscanf(const char *str, const char *format, ...);
+            // (분석할 문자열 주소값, 추출할 형식 지정문자열, 실제데이터 저장할 변수의 포인터)
             sscanf(temp_ptr, "TEMP=%lf", &temp); // TEMP 값 추출
             sscanf(hum_ptr, "HUM=%lf", &hum);    // HUM 값 추출
 
             // 추출한 값을 JSON 형식으로 출력
-            printf("파싱된 JSON: { \"temp\": %.2f, \"hum\": %.2f }\n", temp, hum);
+            printf("파싱된 JSON: { \"temperature\": %.2f, \"humidity\": %.2f }\n", temp, hum);
         }
         else
         {
